@@ -1,20 +1,20 @@
 [
   {
-    "jeu": "Rocket League",
+    "game": "Rocket League",
+    "date": "2025-07-24",
+    "time": "20:00",
     "participants": [
       "zanarah",
       "piik56"
-    ],
-    "date": "2025-07-24",
-    "heure": "20:00"
+    ]
   },
   {
-    "jeu": "Valorant",
+    "game": "Valorant",
+    "date": "2025-07-21",
+    "time": "19:00",
     "participants": [
       "Alex",
       "Zo"
-    ],
-    "date": "2025-07-21",
-    "heure": "19:00"
+    ]
   }
 ]
