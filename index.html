@@ -29,16 +29,91 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
 
-    .fc {
-      --fc-border-color: #333;
-      --fc-neutral-bg-color: #202020;
-      --fc-bg-event-opacity: 0.6;
-      --fc-event-bg-color: #00aaff;
-      --fc-event-text-color: #fff;
-    }
-
-    .fc-toolbar-title {
-      color: #fff;
+    .fc .fc-event-title {
+      display: none; /* cache le titre par défaut */
     }
 
     .fc-daygrid-event {
+      background: transparent !important;
+      padding: 0;
+      border: none;
+      display: flex;
+      justify-content: center;
+    }
+
+    .event-thumbnail {
+      border-radius: 6px;
+      width: 100%;
+      max-width: 180px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.6);
+      transition: transform 0.2s;
+    }
+
+    .event-thumbnail:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Calendrier des Sessions Gamer Coop</h1>
+  <div id="calendar"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('sessions.json')
+        .then(res => res.json())
+        .then(data => {
+          const events = [];
+
+          data.forEach(session => {
+            if (!session.game || !session.date || !session.gameId) return;
+
+            const participants = Array.isArray(session.participants) ? session.participants.join(', ') : 'inconnu';
+            const thumbnailUrl = `https://cdn.cloudflare.steamstatic.com/steam/apps/${session.gameId}/capsule_184x69.jpg`;
+
+            events.push({
+              title: session.game,
+              start: session.date, // plus d'heure
+              extendedProps: {
+                participants: participants,
+                thumbnail: thumbnailUrl
+              }
+            });
+          });
+
+          const calendarEl = document.getElementById('calendar');
+          const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'fr',
+            headerToolbar: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth'
+            },
+            events: events,
+            eventContent: function(arg) {
+              const thumbnail = arg.event.extendedProps.thumbnail;
+              const alt = arg.event.title;
+              const img = document.createElement('img');
+              img.src = thumbnail;
+              img.alt = alt;
+              img.className = 'event-thumbnail';
+              return { domNodes: [img] };
+            },
+            eventDidMount: function(info) {
+              const tooltip = `${info.event.title}\nAvec : ${info.event.extendedProps.participants}`;
+              info.el.setAttribute('title', tooltip);
+            }
+          });
+
+          calendar.render();
+        })
+        .catch(err => {
+          document.getElementById('calendar').innerHTML = "<p>Erreur de chargement des sessions.</p>";
+          console.error("Erreur sessions.json :", err);
+        });
+    });
+  </script>
+</body>
+</html>
