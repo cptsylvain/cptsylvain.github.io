@@ -2,91 +2,43 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calendrier Gamer Coop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calendrier des Sessions Gamer Coop</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
   <style>
     body {
       background-color: #121212;
-      font-family: Arial, sans-serif;
-      color: #f1f1f1;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 2rem;
+      padding: 1rem;
     }
+
     h1 {
-      color: #ff9900;
+      text-align: center;
+      color: #ffa500;
+      margin-bottom: 1rem;
     }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .card {
-      background-color: #1f1f1f;
+
+    #calendar {
+      max-width: 1000px;
+      margin: auto;
+      background-color: #1e1e1e;
       padding: 1rem;
       border-radius: 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
-    .game {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-bottom: 0.5rem;
+
+    .fc {
+      --fc-border-color: #333;
+      --fc-neutral-bg-color: #202020;
+      --fc-bg-event-opacity: 0.6;
+      --fc-event-bg-color: #00aaff;
+      --fc-event-text-color: #fff;
     }
-    .highlight {
-      color: #ffd700;
+
+    .fc-toolbar-title {
+      color: #fff;
     }
-  </style>
-</head>
-<body>
-  <h1>🎮 Calendrier des Sessions Gamer Coop</h1>
-  <div class="grid" id="calendar"></div>
 
-  <script>
-    fetch('sessions.json')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('calendar');
-        if (!Array.isArray(data)) return;
-
-        const today = new Date();
-        const sessions = data
-          .filter(s => s.game && s.date) // évite les sessions corrompues
-          .map(s => {
-            const d = new Date(s.date + 'T00:00');
-            return { ...s, timestamp: d.getTime() };
-          })
-          .sort((a, b) => a.timestamp - b.timestamp);
-
-        const soonestTimestamp = sessions.length ? sessions[0].timestamp : 0;
-
-        sessions.forEach(session => {
-          const card = document.createElement('div');
-          card.className = 'card';
-
-          const game = session.game || 'Jeu inconnu';
-          const date = session.date || 'Date inconnue';
-          const time = session.time || 'Heure inconnue';
-          const players = Array.isArray(session.participants) ? session.participants.join(', ') : 'Inconnu';
-
-          const isSoonest = session.timestamp === soonestTimestamp;
-
-          card.innerHTML = `
-            <div class="game ${isSoonest ? 'highlight' : ''}">${game} ${isSoonest ? '⭐' : ''}</div>
-            <div>${date} à ${time}</div>
-            <div>Avec : ${players}</div>
-          `;
-
-          container.appendChild(card);
-        });
-
-        if (sessions.length === 0) {
-          container.innerHTML = "<p>Aucune session prévue pour le moment.</p>";
-        }
-      })
-      .catch(err => {
-        document.getElementById('calendar').innerHTML = "<p>Erreur de chargement des sessions.</p>";
-        console.error("Erreur de chargement du fichier sessions.json :", err);
-      });
-  </script>
-</body>
-</html>
+    .fc-daygrid-event {
