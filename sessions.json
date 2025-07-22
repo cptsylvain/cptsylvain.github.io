@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "jeu": "ce jeu",
+    "date": "2025-07-21",
+    "heure": "20:00",
+    "participants": [
+      "cptsylvain"
+    ]
+  },
+  {
+    "game": "ce jeu",
+    "date": "2025-07-22",
+    "participants": [
+      "cptsylvain"
+    ]
+  }
+]
