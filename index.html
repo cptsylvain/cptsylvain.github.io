@@ -30,7 +30,7 @@
     }
 
     .fc .fc-event-title {
-      display: none; /* cache le titre par défaut */
+      display: none;
     }
 
     .fc-daygrid-event {
@@ -67,14 +67,22 @@
           const events = [];
 
           data.forEach(session => {
-            if (!session.game || !session.date || !session.gameId) return;
+            // Compatibilité "jeu" ou "game"
+            const game = session.game || session.jeu;
+            const date = session.date;
 
-            const participants = Array.isArray(session.participants) ? session.participants.join(', ') : 'inconnu';
-            const thumbnailUrl = `https://cdn.cloudflare.steamstatic.com/steam/apps/${session.gameId}/capsule_184x69.jpg`;
+            if (!game || !date) return;
+
+            const participants = Array.isArray(session.participants)
+              ? session.participants.join(', ')
+              : 'inconnu';
+
+            const gameId = session.gameId || "570"; // image par défaut = Dota 2
+            const thumbnailUrl = `https://cdn.cloudflare.steamstatic.com/steam/apps/${gameId}/capsule_184x69.jpg`;
 
             events.push({
-              title: session.game,
-              start: session.date, // plus d'heure
+              title: game,
+              start: date,
               extendedProps: {
                 participants: participants,
                 thumbnail: thumbnailUrl
